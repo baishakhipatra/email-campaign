@@ -42,7 +42,8 @@ class SmtpSetting extends Model
 
     public static function getActive()
     {
-        return self::where('is_active', true)->first();
+        logger()->info('SMTP getActive called');
+        return self::where('is_active', 1)->first();
     }
 
     public function toMailerConfig()

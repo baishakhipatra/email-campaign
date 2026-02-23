@@ -50,7 +50,7 @@ class CampaignController extends Controller
             'template_id' => 'required|exists:email_templates,id',
             'list_id' => 'required|exists:subscribers_lists,id',
             'status' => 'in:draft,scheduled',
-            'scheduled_at' => 'nullable|date_format:Y-m-d H:i',
+            'scheduled_at' => 'nullable|date|required_if:status,scheduled',
             'segments' => 'nullable|json',
         ]);
 
@@ -102,7 +102,7 @@ class CampaignController extends Controller
             'template_id' => 'required|exists:email_templates,id',
             'list_id' => 'required|exists:subscribers_lists,id',
             'status' => 'in:draft,scheduled',
-            'scheduled_at' => 'nullable|date_format:Y-m-d H:i',
+            'scheduled_at' => 'nullable|date',
         ]);
 
         $this->campaignService->updateCampaign($campaign, $validated);

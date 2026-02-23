@@ -70,6 +70,19 @@ class SubscribersListController extends Controller
             ->with('success', 'List updated successfully');
     }
 
+    public function toggleStatus(SubscribersList $list)
+    {
+        $list->is_active = $list->is_active ? 0 : 1;
+        $list->save();
+
+        return redirect()->back()->with(
+            'success',
+            $list->is_active
+                ? 'Subscriber list activated successfully'
+                : 'Subscriber list deactivated successfully'
+        );
+    }
+
     public function destroy(SubscribersList $list): RedirectResponse
     {
         $list->delete();

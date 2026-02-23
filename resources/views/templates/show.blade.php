@@ -5,8 +5,13 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>{{ $template->name }}</h2>
-    <div>
-        <a href="{{ route('templates.edit', $template) }}" class="btn btn-warning">Edit</a>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ route('templates.index') }}" class="btn btn-outline-secondary">
+            <i class="bx bx-arrow-back"></i>
+        </a>
+        <div>
+            <a href="{{ route('templates.edit', $template) }}" class="btn btn-warning">Edit</a>
+        </div>
     </div>
 </div>
 
@@ -54,9 +59,15 @@
                 <a href="{{ route('templates.edit', $template) }}" class="btn btn-warning d-block mb-2">
                     <i class="bx bx-edit"></i> Edit Template
                 </a>
-                <form action="{{ route('templates.destroy', $template) }}" method="POST">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Delete this template?')">
+                <form action="{{ route('templates.destroy', $template) }}"
+                    method="POST"
+                    class="d-inline delete-form">
+                    @csrf
+                    @method('DELETE')
+
+                    <button type="button"
+                            class="btn btn-danger w-100 btn-delete"
+                            title="Delete">
                         <i class="bx bx-trash"></i> Delete Template
                     </button>
                 </form>
@@ -65,3 +76,32 @@
     </div>
 </div>
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function () {
+
+                const form = this.closest('.delete-form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This template will be permanently deleted!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+
+            });
+        });
+
+    });
+</script>

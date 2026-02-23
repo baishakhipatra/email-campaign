@@ -36,6 +36,7 @@ Route::middleware(['auth'])
 
         // Subscriber Lists
         Route::resource('lists', SubscribersListController::class);
+        Route::post('/lists/{list}/toggle-status',[SubscribersListController::class, 'toggleStatus'])->name('subscriber-lists.toggle-status');
 
         // Email Templates
         Route::resource('templates', EmailTemplateController::class);

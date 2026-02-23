@@ -9,9 +9,7 @@ use Illuminate\Http\RedirectResponse;
 
 class EmailTemplateController extends Controller
 {
-    /**
-     * Show all templates.
-     */
+
     public function index(): View
     {
         $templates = EmailTemplate::with('creator')
@@ -21,17 +19,12 @@ class EmailTemplateController extends Controller
         return view('templates.index', ['templates' => $templates]);
     }
 
-    /**
-     * Show create template form.
-     */
+
     public function create(): View
     {
         return view('templates.create');
     }
 
-    /**
-     * Store a template.
-     */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -52,25 +45,19 @@ class EmailTemplateController extends Controller
             ->with('success', 'Template created successfully');
     }
 
-    /**
-     * Show template details.
-     */
+
     public function show(EmailTemplate $template): View
     {
         return view('templates.show', ['template' => $template]);
     }
 
-    /**
-     * Show edit form.
-     */
+
     public function edit(EmailTemplate $template): View
     {
         return view('templates.edit', ['template' => $template]);
     }
 
-    /**
-     * Update a template.
-     */
+
     public function update(Request $request, EmailTemplate $template): RedirectResponse
     {
         $validated = $request->validate([

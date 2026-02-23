@@ -119,13 +119,48 @@
                 </button>
             </form>
 
-            <form action="{{ route('campaigns.destroy', $campaign) }}" method="POST" style="display: inline;">
-                @csrf @method('DELETE')
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this campaign?')">
-                    <i class="bx bx-trash"></i> Delete
+            <form action="{{ route('campaigns.destroy', $campaign) }}"
+                method="POST"
+                class="d-inline delete-form">
+                @csrf
+                @method('DELETE')
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger btn-delete"
+                        title="Delete">
+                    <i class="bx bx-trash"></i>
                 </button>
             </form>
         </div>
     </div>
 @endif
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function () {
+
+                const form = this.closest('.delete-form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This campaign will be permanently deleted!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+
+            });
+        });
+
+    });
+</script>

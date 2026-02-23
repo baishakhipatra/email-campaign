@@ -11,18 +11,14 @@ use Illuminate\Support\Facades\Config;
 
 class SmtpSettingController extends Controller
 {
-    /**
-     * Show SMTP settings.
-     */
+
     public function index(): View
     {
         $smtpSetting = SmtpSetting::first();
         return view('settings.smtp', ['setting' => $smtpSetting]);
     }
 
-    /**
-     * Store/Update SMTP settings.
-     */
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -46,9 +42,7 @@ class SmtpSettingController extends Controller
             ->with('success', 'SMTP settings saved successfully');
     }
 
-    /**
-     * Test SMTP connection.
-     */
+
     public function test(): RedirectResponse
     {
         $setting = SmtpSetting::first();
@@ -58,10 +52,9 @@ class SmtpSettingController extends Controller
         }
 
         try {
-            // Configure mail driver temporarily
             Config::set('mail.mailers.smtp', $setting->toMailerConfig());
 
-            // Send test email
+          
             Mail::raw('Test email from Email Campaign System', function ($message) {
                 $message->to(auth()->user()->email)
                     ->from(env('MAIL_FROM_ADDRESS'))

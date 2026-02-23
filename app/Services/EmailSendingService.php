@@ -22,8 +22,14 @@ class EmailSendingService
                 throw new \Exception('No active SMTP configuration found');
             }
 
+            // Force Laravel to use SMTP
+            Config::set('mail.default', 'smtp');
+
             // Configure mail driver dynamically
             Config::set('mail.mailers.smtp', $smtpSetting->toMailerConfig());
+
+            Config::set('mail.from.address', $campaign->from_email);
+            Config::set('mail.from.name', $campaign->from_name);
 
             // Prepare email content with variables
             $emailContent = $this->replaceVariables(

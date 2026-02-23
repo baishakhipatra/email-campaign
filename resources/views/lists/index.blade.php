@@ -35,11 +35,19 @@
                             <span class="badge bg-info">{{ $list->subscribers_count ?? 0 }}</span>
                         </td>
                         <td>
-                            @if($list->is_active)
-                                <span class="badge bg-success">Active</span>
-                            @else
-                                <span class="badge bg-secondary">Inactive</span>
-                            @endif
+                            <form action="{{ route('subscriber-lists.toggle-status', $list) }}"
+                                method="POST"
+                                class="d-inline">
+                                @csrf
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input"
+                                        type="checkbox"
+                                        role="switch"
+                                        id="toggle-{{ $list->id }}"
+                                        {{ $list->is_active ? 'checked' : '' }}
+                                        onchange="this.form.submit()">
+                                </div>
+                            </form>
                         </td>
                         <td>
                             <div class="btn-group" role="group">
@@ -105,6 +113,45 @@
                 });
 
             });
+        });
+
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('.toggle-status').forEach(toggle => {
+
+            toggle.addEventListener('change', function () {
+
+                let checkbox = this;
+                let url = this.dataset.url;
+                let badge = this.closest('td').querySelector('.status-badge');
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+
+                    if (data.success) {
+                        badge.textContent = data.status ? 'Active' : 'Inactive';
+                        badge.classList.toggle('bg-success', data.status);
+                        badge.classList.toggle('bg-secondary', !data.status);
+                    } else {
+                        checkbox.checked = !checkbox.checked;
+                    }
+
+                })
+                .catch(() => {
+                    checkbox.checked = !checkbox.checked;
+                });
+
+            });
+
         });
 
     });
