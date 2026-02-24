@@ -8,7 +8,6 @@ use App\Models\SubscribersList;
 
 class CampaignService
 {
-
     public function createCampaign(array $data): Campaign
     {
         if (($data['status'] ?? 'draft') === 'draft') {

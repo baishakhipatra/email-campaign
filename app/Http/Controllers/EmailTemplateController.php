@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 
 class EmailTemplateController extends Controller
 {
-
     public function index(): View
     {
         $templates = EmailTemplate::with('creator')
@@ -18,7 +17,6 @@ class EmailTemplateController extends Controller
 
         return view('templates.index', ['templates' => $templates]);
     }
-
 
     public function create(): View
     {
@@ -70,6 +68,19 @@ class EmailTemplateController extends Controller
 
         return redirect()->route('templates.show', $template)
             ->with('success', 'Template updated successfully');
+    }
+
+    public function toggleStatus(EmailTemplate $template)
+    {
+        $template->is_active = $template->is_active ? 0 : 1;
+        $template->save();
+
+        return redirect()->back()->with(
+            'success',
+            $template->is_active
+                ? 'Email template activated successfully'
+                : 'Email template deactivated successfully'
+        );
     }
 
 

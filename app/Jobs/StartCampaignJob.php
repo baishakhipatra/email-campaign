@@ -29,7 +29,7 @@ class StartCampaignJob implements ShouldQueue
         try {
             $subscribers = $this->campaign->list->subscribers()
                 ->where('status', 'active')
-                ->where('is_active', true)
+                ->where('is_active', 1)
                 ->get();
 
             $this->campaign->update([

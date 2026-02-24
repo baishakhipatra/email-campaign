@@ -22,12 +22,9 @@ class SendCampaignEmailJob implements ShouldQueue
     protected $emailLog;
 
     public $tries = 3;
-    public $backoff = [60, 120, 300]; // Retry delays: 1 min, 2 min, 5 min
+    public $backoff = [60, 120, 300]; 
     public $timeout = 30;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(Campaign $campaign, $subscriber, EmailLog $emailLog)
     {
         $this->campaign = $campaign;
@@ -35,9 +32,6 @@ class SendCampaignEmailJob implements ShouldQueue
         $this->emailLog = $emailLog;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(EmailSendingService $emailSendingService): void
     {
         try {
@@ -53,8 +47,8 @@ class SendCampaignEmailJob implements ShouldQueue
             Config::set('mail.mailers.smtp.username', $smtp->username);
             Config::set('mail.mailers.smtp.password', $smtp->password);
             Config::set('mail.mailers.smtp.encryption', $smtp->encryption);
-            Config::set('mail.from.address', $smtp->from_email);
-            Config::set('mail.from.name', $smtp->from_name);
+            Config::set('mail.from.address', $smtp->from_email ?: $smtp->username);
+            Config::set('mail.from.name', $smtp->from_name ?: 'Your App Name');
 
             $subscriberData = [
                 'name' => $this->subscriber->name ?? 'Subscriber',
@@ -72,21 +66,18 @@ class SendCampaignEmailJob implements ShouldQueue
             $this->emailLog->update([
                 'status' => 'sent',
                 'sent_at' => now(),
-                'attempts' => $this->emailLog->attempts + 1,
+                'attempts' => $this->attempts(),
             ]);
-
-            $this->campaign->increment('sent_count');
 
         } catch (\Throwable $e) {
 
             $this->emailLog->update([
-                'attempts' => $this->emailLog->attempts + 1,
+                'attempts' => $this->attempts(),
                 'error_message' => $e->getMessage(),
             ]);
 
             if ($this->attempts() >= $this->tries) {
                 $this->emailLog->update(['status' => 'failed']);
-                $this->campaign->increment('failed_count');
             }
 
             throw $e; 
@@ -110,8 +101,6 @@ class SendCampaignEmailJob implements ShouldQueue
             'status' => 'failed',
             'error_message' => $exception->getMessage(),
         ]);
-
-        $this->campaign->failed_count = $this->campaign->failed_count + 1;
         $this->campaign->save();
     }
 }

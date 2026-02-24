@@ -34,11 +34,19 @@
                         <td>{{ Str::limit(ucwords($template->description), 50) }}</td>
                         <td>{{ $template->creator->name }}</td>
                         <td>
-                            @if($template->is_active)
-                                <span class="badge bg-success">Active</span>
-                            @else
-                                <span class="badge bg-secondary">Inactive</span>
-                            @endif
+                            <form action="{{ route('templates.toggle-status', $template) }}"
+                                method="POST"
+                                class="d-inline">
+                                @csrf
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input"
+                                        type="checkbox"
+                                        role="switch"
+                                        id="toggle-{{ $template->id }}"
+                                        {{ $template->is_active ? 'checked' : '' }}
+                                        onchange="this.form.submit()">
+                                </div>
+                            </form>
                         </td>
                         <td>{{ $template->created_at->format('M d, Y') }}</td>
                         <td>

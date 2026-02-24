@@ -8,10 +8,11 @@ use App\Http\Controllers\SubscribersListController;
 use App\Http\Controllers\SmtpSettingController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\UnsubscribeController;
+use App\Http\Controllers\SmtpTestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 // Public routes
 Route::get('/unsubscribe/{token}', [UnsubscribeController::class, 'unsubscribe'])->name('unsubscribe');
@@ -40,12 +41,14 @@ Route::middleware(['auth'])
 
         // Email Templates
         Route::resource('templates', EmailTemplateController::class);
+        Route::post('/templates/{template}/toggle-status',[EmailTemplateController::class, 'toggleStatus'])->name('templates.toggle-status');
 
         // SMTP Settings
         Route::get('/settings/smtp', [SmtpSettingController::class, 'index'])->name('settings.smtp.index');
         Route::post('/settings/smtp', [SmtpSettingController::class, 'store'])->name('settings.smtp.store');
         Route::post('/settings/smtp/test', [SmtpSettingController::class, 'test'])->name('settings.smtp.test');
     });
+    Route::get('/admin/smtp/test', [SmtpTestController::class, 'sendTest']);
 
 Auth::routes();
 

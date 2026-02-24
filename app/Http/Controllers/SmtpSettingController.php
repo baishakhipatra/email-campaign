@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Config;
 
 class SmtpSettingController extends Controller
 {
-
     public function index(): View
     {
         $smtpSetting = SmtpSetting::first();

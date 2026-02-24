@@ -18,56 +18,15 @@ class SendScheduledCampaigns extends Command
 
     public function handle()
     {
-        try {
-            $smtp = DB::table('smtp_settings')->where('is_active', 1)->first();
+        $campaigns = Campaign::where('status', 'scheduled')
+            ->whereNotNull('scheduled_at')
+            ->where('scheduled_at', '<=', now())
+            ->get();
 
-            if (!$smtp) {
-                logger()->error('SMTP settings not found');
-                return 0;
-            }
-
-            Config::set('mail.default', 'smtp');
-
-            Config::set('mail.mailers.smtp.host', $smtp->host);
-            Config::set('mail.mailers.smtp.port', $smtp->port);
-            Config::set('mail.mailers.smtp.username', $smtp->username);
-            Config::set('mail.mailers.smtp.password', $smtp->password);
-            Config::set(
-                'mail.mailers.smtp.encryption',
-                $smtp->encryption === 'none' ? null : $smtp->encryption
-            );
-
-            Config::set('mail.from.address', $smtp->username);
-            Config::set('mail.from.name', config('app.name'));
-
-            $campaigns = Campaign::where('status', 'scheduled')
-                ->where('scheduled_at', '<=', now())
-                ->get();
-
-            if ($campaigns->isEmpty()) {
-                logger()->info('No scheduled campaigns found at ' . now());
-                return 0;
-            }
-
-            foreach ($campaigns as $campaign) {
-                logger()->info('Sending campaign ID: ' . $campaign->id);
-
-                dispatch(new StartCampaignJob($campaign));
-
-                $campaign->update([
-                    'status' => 'sending'
-                ]);
-            }
-            return 0;
-
-        } catch (\Throwable $e) {
-            logger()->error('Campaign send failed', [
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ]);
-
-            return 1;
+        foreach ($campaigns as $campaign) {
+            dispatch(new StartCampaignJob($campaign));
         }
+
+        $this->info('Scheduled campaigns processed');
     }
 }

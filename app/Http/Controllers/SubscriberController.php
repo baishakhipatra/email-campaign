@@ -19,7 +19,6 @@ class SubscriberController extends Controller
         $this->subscriberService = $subscriberService;
     }
 
-
     public function index(): View
     {
         $subscribers = Subscriber::with('lists')
