@@ -8,12 +8,20 @@ use App\Http\Controllers\SubscribersListController;
 use App\Http\Controllers\SmtpSettingController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\UnsubscribeController;
+use App\Http\Controllers\CronController;
 use App\Http\Controllers\SmtpTestController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('auth.login');
 });
+
+Route::get('/reset-password-form', function () {
+    return view('auth.passwords.direct-reset');
+    })->name('password.display_form');
+Route::post('/direct-password-reset', [PasswordResetController::class, 'directReset'])->name('password.direct_update');
+
 // Public routes
 Route::get('/unsubscribe/{token}', [UnsubscribeController::class, 'unsubscribe'])->name('unsubscribe');
 Route::get('/tracking/open/{token}', [TrackingController::class, 'trackOpen'])->name('tracking.open');
@@ -51,5 +59,10 @@ Route::middleware(['auth'])
     Route::get('/admin/smtp/test', [SmtpTestController::class, 'sendTest']);
 
 Auth::routes();
+
+Route::prefix('cron')->group(function () {
+    Route::get('/send-campaign-mail', [CronController::class, 'send_campaign_mail']);
+});
+
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -39,14 +39,27 @@
         .stat-card { border: none; border-radius: 12px; transition: transform 0.2s; background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .stat-card:hover { transform: translateY(-5px); }
         .stat-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+ 
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo {
+            height: 105px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
     @auth
     <div class="sidebar">
-        <div class="px-4 mb-4">
-            <h4 class="text-white fw-bold"><i class="bx bxs-envelope text-info"></i> MailPulse</h4>
-            <small class="text">Campaign Manager</small>
+        <div class="px-3 mb-4 sidebar-brand">
+            <img src="{{ asset('assets/images/logo.png') }}"
+                alt="MailPulse"
+                class="sidebar-logo">
         </div>
         <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <i class='bx bxs-dashboard'></i> Dashboard

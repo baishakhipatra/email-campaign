@@ -56,31 +56,8 @@ class CampaignController extends Controller
         ]);
 
         $campaign = $this->campaignService->createCampaign($validated);
-        $campaign->load('template');
-        if ($campaign->status === 'scheduled') {
-            $subscribers = $campaign->list->subscribers()
-                ->where('status', 'active')
-                ->where('is_active', 1)
-                ->get();
-
-            $campaign->update([
-                'total_subscribers' => $subscribers->count(),
-            ]);
-
-            foreach ($subscribers as $subscriber) {
-                SendCampaignMailJob::dispatch(
-                    $campaign->id,
-                    $subscriber->id
-                )->delay($campaign->scheduled_at);
-            }
-
-            $campaign->update([
-                'status'     => 'sending',
-                'started_at'=> now(),
-            ]);
-        }
         return redirect()->route('campaigns.show', $campaign)
-            ->with('success', 'Campaign created successfully');
+        ->with('success', 'Campaign created successfully');
     }
 
     public function show(Campaign $campaign): View
@@ -137,27 +114,29 @@ class CampaignController extends Controller
 
     public function send(Campaign $campaign): RedirectResponse
     {
-        if (!$campaign->isDraft()) {
-            return redirect()->back()->with('error', 'Only draft campaigns can be sent');
+        if ($campaign->status !== 'draft') {
+            return redirect()->back()
+                ->with('error', 'Only draft campaigns can be sent manually');
         }
 
-            $subscribers = $campaign->list->subscribers()
-                ->where('status', 'active')
-                ->where('is_active', 1)
-                ->get();
+        $subscribers = $campaign->list->subscribers()
+            ->where('status', 'active')
+            ->where('is_active', 1)
+            ->get();
 
-            $campaign->update([
-                'status'            => 'sending',
-                'started_at'        => now(),
-                'total_subscribers' => $subscribers->count(),
-            ]);
+        $campaign->update([
+            'status'            => 'sending',
+            'started_at'        => now(),
+            'scheduled_at'      => null,
+            'total_subscribers' => $subscribers->count(),
+        ]);
 
-            foreach ($subscribers as $subscriber) {
-                SendCampaignMailJob::dispatch(
-                    $campaign->id,
-                    $subscriber->id
-                )->delay($campaign->scheduled_at);
-            }
+        foreach ($subscribers as $subscriber) {
+            SendCampaignMailJob::dispatch(
+                $campaign->id,
+                $subscriber->id
+            );
+        }
 
         return redirect()->back()
             ->with('success', 'Campaign is being sent. Check back shortly for updates');

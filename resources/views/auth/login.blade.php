@@ -17,7 +17,6 @@
             <div class="card login-card border-0">
                 <div class="card-body p-4">
 
-                    <!-- Title -->
                     <div class="text-center mb-4">
                         <h5 class="fw-semibold mb-1">Login</h5>
                         <p class="text-muted small mb-0">
@@ -28,7 +27,6 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
-                        <!-- Email -->
                         <div class="mb-3">
                             <label class="form-label">Email address</label>
                             <input type="email"
@@ -45,7 +43,6 @@
                             @enderror
                         </div>
 
-                        <!-- Password -->
                         <div class="mb-3">
                             <label class="form-label">Password</label>
                             <input type="password"
@@ -61,36 +58,23 @@
                             @enderror
                         </div>
 
-                        <!-- Remember -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                                <label class="form-check-label" for="remember">
-                                    Remember me
-                                </label>
-                            </div>
-
-                            @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}" class="small text-decoration-none">
-                                    Forgot password?
-                                </a>
-                            @endif
+                            <a href="{{ route('password.display_form') }}" class="small text-decoration-none">
+                                Forgot password?
+                            </a>
                         </div>
 
-                        <!-- Button -->
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">
                                 Login
                             </button>
                         </div>
-
                     </form>
-
                 </div>
             </div>
 
             <p class="text-center text-muted small mt-3">
-                © {{ date('Y') }} All rights reserved.
+                © {{ date('Y') }} Email-Campaign All rights reserved.
             </p>
         </div>
     </div>

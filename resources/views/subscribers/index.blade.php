@@ -51,20 +51,21 @@
                         <td>{{ $subscriber->subscribed_at->format('M d, Y') }}</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="{{ route('subscribers.show', $subscriber) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                <a href="{{ route('subscribers.show', $subscriber) }}" class="btn btn-outline-primary" title="View">
                                     <i class="bx bx-show"></i>
                                 </a>
-                                <a href="{{ route('subscribers.edit', $subscriber) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                <a href="{{ route('subscribers.edit', $subscriber) }}" class="btn btn-outline-warning" title="Edit">
                                     <i class="bx bx-edit"></i>
                                 </a>
                                 <form action="{{ route('subscribers.destroy', $subscriber) }}"
                                     method="POST"
-                                    class="d-inline delete-form">
+                                    class="d-inline-flex m-0 delete-form">
                                     @csrf
                                     @method('DELETE')
 
                                     <button type="button"
-                                            class="btn btn-sm btn-outline-danger btn-delete"
+                                            class="btn btn-outline-danger btn-delete"
+                                            style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
                                             title="Delete">
                                         <i class="bx bx-trash"></i>
                                     </button>

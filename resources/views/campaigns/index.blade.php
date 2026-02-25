@@ -51,21 +51,22 @@
                         <td>{{ $campaign->getOpenRate() }}%</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="{{ route('campaigns.show', $campaign) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                <a href="{{ route('campaigns.show', $campaign) }}" class="btn btn-outline-primary" title="View">
                                     <i class="bx bx-show"></i>
                                 </a>
                                 @if($campaign->isDraft())
-                                    <a href="{{ route('campaigns.edit', $campaign) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                    <a href="{{ route('campaigns.edit', $campaign) }}" class="btn btn-outline-warning" title="Edit">
                                         <i class="bx bx-edit"></i>
                                     </a>
                                     <form action="{{ route('campaigns.destroy', $campaign) }}"
                                         method="POST"
-                                        class="d-inline delete-form">
+                                        class="d-inline-flex m-0 delete-form">
                                         @csrf
                                         @method('DELETE')
 
                                         <button type="button"
-                                                class="btn btn-sm btn-outline-danger btn-delete"
+                                                class="btn btn-outline-danger btn-delete"
+                                                 style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
                                                 title="Delete">
                                             <i class="bx bx-trash"></i>
                                         </button>

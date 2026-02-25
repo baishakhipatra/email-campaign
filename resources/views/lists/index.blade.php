@@ -51,23 +51,24 @@
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="{{ route('lists.show', $list) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                <a href="{{ route('lists.show', $list) }}" class="btn btn-outline-primary" title="View">
                                     <i class="bx bx-show"></i>
                                 </a>
-                                <a href="{{ route('lists.edit', $list) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                <a href="{{ route('lists.edit', $list) }}" class="btn btn-outline-warning" title="Edit">
                                     <i class="bx bx-edit"></i>
                                 </a>
-                                <a href="{{ route('subscribers.export', $list) }}" class="btn btn-sm btn-outline-info" title="Export">
+                                <a href="{{ route('subscribers.export', $list) }}" class="btn btn-outline-info" title="Export">
                                     <i class="bx bx-export"></i>
                                 </a>
                                 <form action="{{ route('lists.destroy', $list) }}"
                                     method="POST"
-                                    class="d-inline delete-form">
+                                    class="d-inline-flex m-0 delete-form">
                                     @csrf
                                     @method('DELETE')
 
                                     <button type="button"
-                                            class="btn btn-sm btn-outline-danger btn-delete"
+                                            class="btn btn-outline-danger btn-delete"
+                                            style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
                                             title="Delete">
                                         <i class="bx bx-trash"></i>
                                     </button>

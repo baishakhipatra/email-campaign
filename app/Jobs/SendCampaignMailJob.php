@@ -8,9 +8,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Campaign;
 use App\Models\Subscriber;
+use App\Models\EmailLog;
+use Illuminate\Support\Str;
 
 class SendCampaignMailJob implements ShouldQueue
 {
@@ -27,22 +29,37 @@ class SendCampaignMailJob implements ShouldQueue
 
     public function handle()
     {
-        $campaign = Campaign::with('template')
-            ->findOrFail($this->campaignId);
+        $campaign = Campaign::with('template')->findOrFail($this->campaignId);
         $subscriber = Subscriber::findOrFail($this->subscriberId);
 
         if (!$campaign || !$subscriber) {
             return;
         }
 
-        // Mail::to($subscriber->email)
-        //     ->send(new CampaignMail($campaign, $subscriber));
+        $emailLog = EmailLog::updateOrCreate(
+            [
+                'campaign_id'   => $this->campaignId,
+                'subscriber_id' => $this->subscriberId,
+            ],
+            [
+                'recipient_email' => $subscriber->email,
+                'tracking_token'  => (string) Str::uuid(),
+                'status'          => 'pending',
+            ]
+        );
 
         try {
-            Mail::to($subscriber->email)
-                ->send(new CampaignMail($campaign, $subscriber));
-            Campaign::where('id', $campaign->id)
-            ->increment('sent_count');
+            $emailLog->increment('attempts');
+
+            Mail::to($subscriber->email)->send(new CampaignMail($campaign, $subscriber));
+
+            $emailLog->update([
+                'status'  => 'sent',
+                'sent_at' => now(),
+                'error_message' => null,
+            ]);
+
+            Campaign::where('id', $campaign->id)->increment('sent_count');
 
             logger()->info('Campaign job executed', [
                 'campaign_id' => $this->campaignId,
@@ -50,8 +67,12 @@ class SendCampaignMailJob implements ShouldQueue
             ]);
 
         } catch (\Throwable $e) {
-            Campaign::where('id', $campaign->id)
-            ->increment('failed_count');
+            $emailLog->update([
+                'status'        => 'failed',
+                'error_message' => substr($e->getMessage(), 0, 500), 
+            ]);
+
+            Campaign::where('id', $campaign->id)->increment('failed_count');
 
             logger()->error('Campaign mail failed', [
                 'campaign_id'   => $campaign->id,
@@ -59,6 +80,7 @@ class SendCampaignMailJob implements ShouldQueue
                 'error'         => $e->getMessage(),
             ]);
         }
+
         $this->checkCampaignCompletion($campaign->id);
     }
 
