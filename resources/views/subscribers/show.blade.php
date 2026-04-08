@@ -27,12 +27,24 @@
             <div class="card-body">
                 <table class="table table-sm">
                     <tr>
+                        <td><strong>Name:</strong></td>
+                        <td>{{ ucwords($subscriber->name ?? '-') }}</td>
+                    </tr>
+                    <tr>
                         <td><strong>Email:</strong></td>
                         <td>{{ $subscriber->email }}</td>
                     </tr>
+                     <tr>
+                    <td><strong>Phone:</strong></td>
+                        <td>{{ ucwords($subscriber->phone ?? '-') }}</td>
+                    </tr>
                     <tr>
-                        <td><strong>Name:</strong></td>
-                        <td>{{ ucwords($subscriber->name ?? '-') }}</td>
+                        <td><strong>Birthday Date:</strong></td>
+                        <td>{{ ucwords($subscriber->birthday_date ?? '-') }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Anniversary Date:</strong></td>
+                        <td>{{ ucwords($subscriber->anniversary_date ?? '-') }}</td>
                     </tr>
                     <tr>
                         <td><strong>Status:</strong></td>

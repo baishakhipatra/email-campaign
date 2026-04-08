@@ -13,16 +13,43 @@
                     @csrf @method('PUT')
 
                     <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                               id="name" name="name" value="{{ old('name', ucwords($subscriber->name ?? '')) }}">
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label for="email" class="form-label">Email Address</label>
                         <input type="email" class="form-control" value="{{ $subscriber->email }}" disabled>
                         <small class="text-muted">Email cannot be changed</small>
                     </div>
 
                     <div class="mb-3">
-                        <label for="name" class="form-label">Full Name</label>
-                        <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                               id="name" name="name" value="{{ old('name', ucwords($subscriber->name ?? '')) }}">
-                        @error('name')
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="number" class="form-control @error('phone') is-invalid @enderror" 
+                               id="phone" name="phone" value="{{ old('phone', ucwords($subscriber->phone ?? '')) }}">
+                        @error('phone')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="birthday_date" class="form-label">Birthday Date</label>
+                        <input type="date" class="form-control @error('birthday_date') is-invalid @enderror" 
+                               id="birthday_date" name="birthday_date" value="{{ old('birthday_date', ucwords($subscriber->birthday_date ?? '')) }}">
+                        @error('birthday_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="anniversary_date" class="form-label">Anniversary Date</label>
+                        <input type="date" class="form-control @error('anniversary_date') is-invalid @enderror" 
+                               id="anniversary_date" name="anniversary_date" value="{{ old('anniversary_date', ucwords($subscriber->anniversary_date ?? '')) }}">
+                        @error('anniversary_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

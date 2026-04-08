@@ -30,7 +30,6 @@ class SubscriberController extends Controller
         return view('subscribers.index', ['subscribers' => $subscribers, 'lists' => $lists]);
     }
 
-
     public function create(): View
     {
         $lists = SubscribersList::where('is_active', true)->get();
@@ -40,8 +39,11 @@ class SubscriberController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:subscribers,email',
-            'name' => 'nullable|string|max:255',
+            'phone' => 'nullable|digits:10',
+            'birthday_date' => 'nullable|date|before:today',
+            'anniversary_date' => 'nullable|date',
             'lists' => 'nullable|array',
             'lists.*' => 'exists:subscribers_lists,id',
         ]);
@@ -51,7 +53,6 @@ class SubscriberController extends Controller
         return redirect()->route('subscribers.index')
             ->with('success', 'Subscriber created successfully');
     }
-
 
     public function show(Subscriber $subscriber): View
     {
@@ -68,7 +69,10 @@ class SubscriberController extends Controller
     public function update(Request $request, Subscriber $subscriber): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|digits:10',
+            'birthday_date' => 'nullable|date|before:today',
+            'anniversary_date' => 'nullable|date',
             'status' => 'in:active,unsubscribed',
             'lists' => 'nullable|array',
             'lists.*' => 'exists:subscribers_lists,id',
@@ -110,12 +114,16 @@ class SubscriberController extends Controller
             $validated['list_id'] ?? null
         );
 
-        $message = "Imported: {$result['imported']}, Skipped: {$result['skipped']}";
-        if (!empty($result['errors'])) {
-            $message .= "\nErrors: " . implode(', ', array_slice($result['errors'], 0, 5));
-        }
+        // $message = "Imported: {$result['imported']}, Skipped: {$result['skipped']}";
+        // if (!empty($result['errors'])) {
+        //     $message .= "\nErrors: " . implode(', ', array_slice($result['errors'], 0, 5));
+        // }
 
-        return redirect()->route('subscribers.index')->with('success', $message);
+        // return redirect()->route('subscribers.index')->with('success', $message);
+        return redirect()->route('subscribers.index')->with([
+            'success' => "Imported: {$result['imported']}, Skipped: {$result['skipped']}",
+            'import_errors' => $result['errors']
+        ]);
     }
 
     public function export(SubscribersList $list): StreamedResponse

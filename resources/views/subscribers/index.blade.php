@@ -23,8 +23,8 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
-                    <th>Email</th>
                     <th>Name</th>
+                    <th>Email</th>
                     <th>Status</th>
                     <th>Lists</th>
                     <th>Subscribed</th>
@@ -34,8 +34,8 @@
             <tbody>
                 @forelse ($subscribers as $subscriber)
                     <tr>
-                        <td>{{ $subscriber->email }}</td>
-                        <td>{{ ucwords($subscriber->name ?? '-') }}</td>
+                         <td>{{ ucwords($subscriber->name ?? '-') }}</td>
+                        <td>{{ $subscriber->email }} <br> Ph: {{ $subscriber->phone ?? '-'}}</td>
                         <td>
                             @if($subscriber->status === 'active')
                                 <span class="badge bg-success">Active</span>
@@ -91,7 +91,6 @@
                     method="POST"
                     enctype="multipart/form-data">
                     @csrf
-
                     <div class="modal-header">
                         <h5 class="modal-title">
                             <i class="bx bx-import"></i> Import Subscribers (CSV)
@@ -100,21 +99,26 @@
                     </div>
 
                     <div class="modal-body">
-
-                        <!-- CSV File -->
                         <div class="mb-3">
                             <label class="form-label">CSV File <span class="text-danger">*</span></label>
                             <input type="file"
                                 name="file"
                                 class="form-control"
-                                accept=".csv"
-                                required>
+                                accept=".csv">
+                               @error('file') 
+                                <div class="text-danger mt-1">{{ $message }}</div> 
+                               @enderror
+
                             <small class="text-muted">
-                                Allowed format: email, name
+                                Allowed format: name, email, phone, birthday_date (DD-MM-YYYY), anniversary_date (DD-MM-YYYY)
                             </small>
+                            <a href="{{ asset('sample/subscribers_sample.csv') }}" 
+                                class="d-block mt-1 text-primary" 
+                                download>
+                                Download Sample CSV
+                            </a>
                         </div>
 
-                        <!-- Subscriber List -->
                         <div class="mb-3">
                             <label class="form-label">Add to List (optional)</label>
                             <select name="list_id" class="form-select">
@@ -145,6 +149,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 {{ $subscribers->links() }}
@@ -175,6 +180,15 @@
 
             });
         });
-
     });
 </script>
+@if ($errors->any() || session('import_errors'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = new bootstrap.Modal(document.getElementById('importCsvModal'));
+        modal.show();
+    });
+</script>
+@endif
+
+

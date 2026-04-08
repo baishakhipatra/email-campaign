@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('campaigns:send-scheduled')->everyMinute();
+Schedule::command('wishes:send')->dailyAt('18:12');
