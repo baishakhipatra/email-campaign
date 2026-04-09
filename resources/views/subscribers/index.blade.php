@@ -99,7 +99,16 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="mb-3">
+                        @if(session('import_errors'))
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach(session('import_errors') as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <!-- <div class="mb-3">
                             <label class="form-label">CSV File <span class="text-danger">*</span></label>
                             <input type="file"
                                 name="file"
@@ -112,6 +121,28 @@
                             <small class="text-muted">
                                 Allowed format: name, email, phone, birthday_date (DD-MM-YYYY), anniversary_date (DD-MM-YYYY)
                             </small>
+                            <a href="{{ asset('sample/subscribers_sample.csv') }}" 
+                                class="d-block mt-1 text-primary" 
+                                download>
+                                Download Sample CSV
+                            </a>
+                        </div> -->
+                        <div class="mb-3">
+                            <label class="form-label">CSV File <span class="text-danger">*</span></label>
+
+                            <input type="file"
+                                name="file"
+                                class="form-control @error('file') is-invalid @enderror"
+                                accept=".csv">
+
+                            @error('file')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+
+                            <small class="text-muted">
+                                Allowed format: name, email, phone, birthday_date (DD-MM-YYYY), anniversary_date (DD-MM-YYYY)
+                            </small>
+
                             <a href="{{ asset('sample/subscribers_sample.csv') }}" 
                                 class="d-block mt-1 text-primary" 
                                 download>
@@ -182,11 +213,20 @@
         });
     });
 </script>
-@if ($errors->any() || session('import_errors'))
+@if ($errors->has('file'))
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var modal = new bootstrap.Modal(document.getElementById('importCsvModal'));
-        modal.show();
+        let importModal = new bootstrap.Modal(document.getElementById('importCsvModal'));
+        importModal.show();
+    });
+</script>
+@endif
+
+@if(session('import_errors'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let importModal = new bootstrap.Modal(document.getElementById('importCsvModal'));
+        importModal.show();
     });
 </script>
 @endif
