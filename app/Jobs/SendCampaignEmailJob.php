@@ -35,7 +35,6 @@ class SendCampaignEmailJob implements ShouldQueue
     public function handle(EmailSendingService $emailSendingService): void
     {
         try {
-        
             $smtp = SmtpSetting::where('is_active', 1)->first();
 
             if (!$smtp) {
@@ -49,6 +48,11 @@ class SendCampaignEmailJob implements ShouldQueue
             Config::set('mail.mailers.smtp.encryption', $smtp->encryption);
             Config::set('mail.from.address', $smtp->from_email ?: $smtp->username);
             Config::set('mail.from.name', $smtp->from_name ?: 'Your App Name');
+
+            dd([
+                'config_username' => config('mail.mailers.smtp.username'),
+                'config_from' => config('mail.from.address'),
+            ]);
 
             $subscriberData = [
                 'name' => $this->subscriber->name ?? 'Subscriber',

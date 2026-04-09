@@ -69,3 +69,24 @@
     </div>
 </div>
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        CKEDITOR.replace('html_content', {
+            height: 300,
+
+            // Optional: allow all HTML (important for email templates)
+            allowedContent: true,
+
+            // Optional toolbar customization
+            toolbar: [
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                { name: 'links', items: ['Link', 'Unlink'] },
+                { name: 'insert', items: ['Image', 'Table'] },
+                { name: 'styles', items: ['Format'] },
+                { name: 'tools', items: ['Maximize'] }
+            ]
+        });
+    });
+</script>

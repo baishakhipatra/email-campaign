@@ -19,7 +19,6 @@ class SendOccasionWishes extends Command
         $month = $today->month;
         $day   = $today->day;
 
-        // 🎂 Birthday Users
         $birthdays = Subscriber::whereMonth('birthday_date', $month)
             ->whereDay('birthday_date', $day)
             ->where('is_active', 1)
@@ -29,7 +28,6 @@ class SendOccasionWishes extends Command
             Mail::to($user->email)->queue(new \App\Mail\BirthdayWishMail($user));
         }
 
-        // 💍 Anniversary Users
         $anniversaries = Subscriber::whereMonth('anniversary_date', $month)
             ->whereDay('anniversary_date', $day)
             ->where('is_active', 1)

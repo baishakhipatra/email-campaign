@@ -111,32 +111,39 @@
                 <h5 class="mb-0">Popular SMTP Providers</h5>
             </div>
             <div class="card-body small">
+
+                <!-- TLS Example -->
                 <div class="mb-3">
-                    <strong>Gmail</strong>
+                    <strong>Gmail (TLS)</strong>
                     <p class="text-muted mb-2">
                         Host: smtp.gmail.com<br>
                         Port: 587<br>
                         Encryption: TLS
                     </p>
                 </div>
+
+                <!-- SSL Example -->
                 <div class="mb-3">
-                    <strong>SendGrid</strong>
+                    <strong>Zoho Mail (SSL)</strong>
                     <p class="text-muted mb-2">
+                        Host: smtp.zoho.com<br>
+                        Port: 465<br>
+                        Encryption: SSL
+                    </p>
+                </div>
+
+                <!-- Optional Extra -->
+                <div>
+                    <strong>SendGrid (TLS)</strong>
+                    <p class="text-muted">
                         Host: smtp.sendgrid.net<br>
                         Port: 587<br>
                         Encryption: TLS
                     </p>
                 </div>
-                <div>
-                    <strong>AWS SES</strong>
-                    <p class="text-muted">
-                        Host: email-smtp.{region}.amazonaws.com<br>
-                        Port: 587<br>
-                        Encryption: TLS
-                    </p>
-                </div>
+
             </div>
         </div>
+        </div>
     </div>
-</div>
 @endsection
